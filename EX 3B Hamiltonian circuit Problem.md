@@ -22,7 +22,7 @@ To write a python program to check whether Hamiltonian path exits in the given g
 ```
 /*
 Program to implement to check whether Hamiltonian path exits in the given graph.
-Developed by: SRIRAM S 
+Developed by: SRIRAM S S
 Register Number: 212222230150
 class Graph():
     def __init__(self, vertices):
