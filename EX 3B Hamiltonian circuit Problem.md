@@ -1,89 +1,80 @@
-# EX 3B Hamiltonian Circuit Problem
+# EX 3C Sudoku Solver
+
 ## DATE:
 ## AIM:
-To write a python program to check whether Hamiltonian path exits in the given graph.
+To write a python program to find the solution of sudoku puzzle using Backtracking.
+
 
 ## Algorithm
 
-1. Define the `Graph` class with an initializer that creates an adjacency matrix `graph` and sets the number of vertices `V`.  
-2. Define the function `isSafe` that checks if a vertex `v` can be added to the current path at position `pos`.  
-   - The vertex `v` should be connected to the last added vertex (`graph[path[pos-1]][v] == 1`).  
-   - The vertex `v` should not already exist in the path to avoid revisiting vertices.  
-3. Define a recursive function `hamCycleUtil` that tries to find a Hamiltonian cycle.  
-   - If all vertices have been visited (`pos == V`), check if the last vertex is connected to the first vertex (`graph[path[pos-1]][path[0]] == 1`). If true, return `True`, indicating a valid cycle.  
-   - Otherwise, for each vertex, check if it can be safely added to the path using `isSafe`. If so, add the vertex and make a recursive call to add the next vertex.  
-   - If adding a vertex leads to a dead end, backtrack by removing the vertex (`path[pos] = -1`).  
-4. Define the `hamCycle` function that initializes the path with `-1` and starts the recursive cycle search from vertex `0`.  
-5. If no Hamiltonian cycle is found (`hamCycleUtil` returns `False`), print that no solution exists.  
-6. If a solution exists, print the Hamiltonian cycle by calling the `printSolution` function, which outputs the path.
-
+1. Start from the first empty cell on the board.
+2. Try placing values from 1 to 9 in the cell, one by one.
+3. For each value, check if placing it violates Sudoku rules (row, column, and subgrid uniqueness).
+4. If a valid value is found, place it and recursively try to solve the next empty cell.
+5. If no value is valid, backtrack by resetting the cell and trying the next possible value.
+6. Continue until the board is completely filled or no solution exists.
 
 ## Program:
 ```
 /*
-Program to implement to check whether Hamiltonian path exits in the given graph.
+Program to implement to to find the solution of sudoku puzzle using Backtracking.
 Developed by: SRIRAM S S
 Register Number: 212222230150
-class Graph():
-    def __init__(self, vertices):
-        self.graph = [[0 for column in range(vertices)]
-                            for row in range(vertices)]
-        self.V = vertices
-    def isSafe(self, v, pos, path):
-        if self.graph[ path[pos-1] ][v] == 0:
+board = [
+    [0, 0, 0, 8, 0, 0, 4, 0, 3],
+    [2, 0, 0, 0, 0, 4, 8, 9, 0],
+    [0, 9, 0, 0, 0, 0, 0, 0, 2],
+    [0, 0, 0, 0, 2, 9, 0, 1, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 7, 0, 6, 5, 0, 0, 0, 0],
+    [9, 0, 0, 0, 0, 0, 0, 8, 0],
+    [0, 6, 2, 7, 0, 0, 0, 0, 1],
+    [4, 0, 3, 0, 0, 6, 0, 0, 0]
+]
+
+def printBoard(board):
+    for i in range(0, 9):
+        for j in range(0, 9):
+            print(board[i][j], end=" ")
+        print()
+
+def isPossible(board, row, col, val):
+    for j in range(0, 9):
+        if board[row][j] == val:
             return False
-        for vertex in path:
-            if vertex == v:
-                return False
- 
-        return True
-    def hamCycleUtil(self, path, pos):
-        if pos == self.V:
-            if self.graph[ path[pos-1] ][ path[0] ] == 1:
-                return True
-            else:
-                return False
-        for v in range(1,self.V):
- 
-            if self.isSafe(v, pos, path) == True:
- 
-                path[pos] = v
- 
-                if self.hamCycleUtil(path, pos+1) == True:
-                    return True
-                path[pos] = -1
- 
-        return False
- 
-    def hamCycle(self):
-        path = [-1] * self.V
-        path[0] = 0
- 
-        if self.hamCycleUtil(path,1) == False:
-            print ("Solution does not exist\n")
+
+    for i in range(0, 9):
+        if board[i][col] == val:
             return False
- 
-        self.printSolution(path)
-        return True
- 
-    def printSolution(self, path):
-        print ("Solution Exists: Following",
-                 "is one Hamiltonian Cycle")
-        for vertex in path:
-            print (vertex, end = " ")
-        print (path[0], "\n")
-g1 = Graph(5)
-g1.graph = [ [0, 1, 0, 1, 0], [1, 0, 1, 1, 1],
-            [0, 1, 0, 0, 1,],[1, 1, 0, 0, 1],
-            [0, 1, 1, 1, 0], ]
-g1.hamCycle();
+
+    startRow = (row // 3) * 3
+    startCol = (col // 3) * 3
+    for i in range(0, 3):
+        for j in range(0, 3):
+            if board[startRow+i][startCol+j] == val:
+                return False
+    return True
+
+def solve():
+    for i in range(0, 9):
+        for j in range(0, 9):
+            if board[i][j] == 0:
+                for val in range(1, 10):
+                    if isPossible(board, i, j, val):
+                        board[i][j] = val
+                        solve()
+                        board[i][j] = 0
+                return
+    printBoard(board)
+
+solve() 
 */
 ```
 
 ## Output:
-![Screenshot 2025-04-29 141920](https://github.com/user-attachments/assets/350efd59-9e23-42d4-9ed4-d783977d6e98)
 
+![Screenshot 2025-04-29 142113](https://github.com/user-attachments/assets/cc05e080-72f6-4fe9-a836-84de9b7156e0)
 
 
 ## Result:
-The Hamiltonian path program executed successfully, and it determined whether a Hamiltonian path exists in the given graph.
+The Sudoku solver program executed successfully and found the solution for the given puzzle.
